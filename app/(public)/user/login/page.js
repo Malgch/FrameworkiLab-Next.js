@@ -1,5 +1,38 @@
-/* eslint-disable @next/next/no-img-element */
+'use client';
+import { useForm } from "react-hook-form";
+import {browserSessionPersistence, setPersistence} from 'firebase/auth';
+import { signInWithEmailAndPassword } from "firebase/auth";
+import {auth} from '@/app/lib/firebase';
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 function LoginForm() {
+
+  const { register, handleSubmit, formState: {errors}, } = useForm();
+  const [loginError, setLoginError] = useState("");
+  const router = useRouter();
+
+const onSubmit = data => {
+  setLoginError(""); //clearing previous errors
+
+  setPersistence(auth, browserSessionPersistence)
+  .then(() => {
+    signInWithEmailAndPassword(auth, data.email, data.password)
+  .then((userCredential => {
+    console.log("user logged", userCredential.user.email);
+    router.push("/user/profile"); //redirect to user profile
+    //TODO logika logowania
+  }))
+  .catch(error => {
+    console.error("user credential incorrect", error);
+    setLoginError("Invalid email or password");
+  })
+  });
+  
+}
+
+
+
     return (
 
 <section className="bg-white">
@@ -38,41 +71,48 @@ function LoginForm() {
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eligendi nam dolorum aliquam,
           quibusdam aperiam voluptatum.
         </p>
-
-        <form action="#" className="mt-8 grid grid-cols-6 gap-6">
-          <div className="col-span-6 ">
-            <label htmlFor="FirstName" className="block text-sm font-medium text-gray-700">
-              User Name
-            </label>
-
-            <input
-              type="text"
-              id="FirstName"
-              name="first_name"
-              className="mt-1 w-full rounded-md border-gray-200 bg-white text-lg text-gray-700 shadow-sm"
-            />
-          </div>
+        <p>{loginError && <p className="text-red-600 mt-3">{loginError}</p>}</p>
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-8 grid grid-cols-6 gap-6">
+         {/* Display error message */}
+          
 
           <div className="col-span-6">
             <label htmlFor="Email" className="block text-sm font-medium text-gray-700"> Email </label>
 
             <input
+              {...register("email", {required: {
+                value: true,
+                message:"musisz podać adres email"
+              },
+              pattern: {
+                value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                message: "adres email ma niepoprawny format"
+              }
+            })}
               type="email"
               id="Email"
               name="email"
               className="mt-1 w-full rounded-md border-gray-200 bg-white text-lg text-gray-700 shadow-sm"
             />
+            <p className="text-red-600 mt-3"> {errors.email?.message}</p>
           </div>
 
           <div className="col-span-6 ">
             <label htmlFor="Password" className="block text-sm font-medium text-gray-700"> Password </label>
 
             <input
+              {...register("password", 
+                {required: "musisz podać hasło",
+                  minLength: { value: 6, message: "zbyt krótkie hasło!"}
+
+              }
+            )}
               type="password"
               id="Password"
               name="password"
               className="mt-1 w-full rounded-md border-gray-200 bg-white text-lg text-gray-700 shadow-sm"
             />
+            <p className="text-red-600 mt-3"> {errors.password?.message}</p>
           </div>
 
           
