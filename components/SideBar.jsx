@@ -22,8 +22,8 @@ function SideBar({ children }) {
           {/* Sidebar content here */}
           <li> {user && <Link href="/user/logout">Logout</Link>} </li>
           <li> {user && <Link href="/user/profile">Profile</Link>} </li>
-          <li><Link href="/user/register">Register</Link></li>
-          <li><Link href="/user/login">Login</Link></li>
+          <li>{!user && <Link href="/user/register">Register</Link>} </li>
+          <li>{!user && <Link href="/user/login">Login</Link>} </li>
           
         </ul>
       </div>

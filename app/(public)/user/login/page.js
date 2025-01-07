@@ -24,7 +24,7 @@ const onSubmit = data => {
     //TODO logika logowania
   }))
   .catch(error => {
-    console.error("user credential incorrect", error);
+    console.log("user credential incorrect", error);
     setLoginError("Invalid email or password");
   })
   });
