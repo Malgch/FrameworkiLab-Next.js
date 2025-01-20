@@ -2,6 +2,7 @@
 
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"
 //import { getAnalytics } from "firebase/analytics";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -33,13 +34,5 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-//const analytics = getAnalytics(app);
-
 export const auth = getAuth(app);
-
-// Lazy load getAnalytics
-if (typeof window !== "undefined") {
-  import("firebase/analytics").then(({ getAnalytics }) => {
-      getAnalytics(app);
-  });
-}
+export const db = getFirestore(app); 
