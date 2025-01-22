@@ -39,7 +39,7 @@ const onSubmit = data => {
   <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
     <aside className="relative block h-16 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
       <img alt="" 
-      src="https://images.unsplash.com/photo-1605106702734-205df224ecce?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
+      src="https://www.artwork-vault.com/cdn/shop/files/van-gogh-bar.png?v=1730898903&width=2727"
         className="absolute inset-0 h-full w-full object-cover"
       />
     </aside>
@@ -48,7 +48,7 @@ const onSubmit = data => {
       className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6"
     >
       <div className="max-w-xl lg:max-w-3xl">
-        <a className="block text-blue-600" href="#">
+        <a className="block text-indigo-400" href="#">
           <span className="sr-only">Home</span>
           <svg
             className="h-8 sm:h-10"
@@ -63,7 +63,7 @@ const onSubmit = data => {
           </svg>
         </a>
 
-        <h1 className="mt-6 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
+        <h1 className="mt-6 text-2xl font-bold text-indigo-600 sm:text-3xl md:text-4xl">
           Welcome to Login Page
         </h1>
 
@@ -103,7 +103,7 @@ const onSubmit = data => {
             <input
               {...register("password", 
                 {required: "musisz podać hasło",
-                  minLength: { value: 6, message: "zbyt krótkie hasło!"}
+                  minLength: { value: 6, message: "The password is incorrect"}
 
               }
             )}
@@ -119,14 +119,14 @@ const onSubmit = data => {
 
           <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
             <button
-              className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500"
+              className="inline-block shrink-0 rounded-md border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500"
             >
              Login
             </button>
 
             <p className="mt-4 text-sm text-gray-500 sm:mt-0">
               No account?
-              <a href="#" className="text-gray-700 underline">Register</a>.
+              <a href="register" className="text-gray-700 underline">Register</a>.
             </p>
           </div>
         </form>
