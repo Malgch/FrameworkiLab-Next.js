@@ -1,11 +1,45 @@
+'use client'
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useRouter } from 'next/navigation';
+import { auth } from "@/app/lib/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+
+
+
 function RegisterForm() {
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const onSubmit = async (data) => {
+    setError('');
+    setSuccessMessage('');
+    setLoading(true);
+
+    try {
+      await createUserWithEmailAndPassword(auth, data.email, data.password);
+      console.log('User registered successfully');
+      setSuccessMessage('Your account has been set up successfully!');
+
+    } catch (err) {
+      setError(err.message);
+    }
+
+    setLoading(false);
+  };
+
+
+
     return (
 
 <section className="bg-white">
   <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
     <aside className="relative block h-16 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
       <img alt="" 
-      src="https://plus.unsplash.com/premium_photo-1671650124748-1ab6513c4bea?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      src="https://img.stablecog.com/insecure/1920w/aHR0cHM6Ly9iLnN0YWJsZWNvZy5jb20vN2JlZTdmM2UtYzBjMy00N2Q0LThhNDYtMDk2MWVmZWQ1YmRiLmpwZWc.webp"
         className="absolute inset-0 h-full w-full object-cover"
       />
     </aside>
@@ -14,7 +48,7 @@ function RegisterForm() {
       className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6"
     >
       <div className="max-w-xl lg:max-w-3xl">
-        <a className="block text-indigo-600" href="#">
+        <a className="block text-indigo-400" href="#">
           <span className="sr-only">Home</span>
           <svg
             className="h-8 sm:h-10"
@@ -29,7 +63,7 @@ function RegisterForm() {
           </svg>
         </a>
 
-        <h1 className="mt-6 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
+        <h1 className="mt-6 text-2xl font-bold text-indigo-600 sm:text-3xl md:text-4xl">
           Register your account
         </h1>
 
@@ -38,54 +72,57 @@ function RegisterForm() {
           quibusdam aperiam voluptatum.
         </p>
 
-        <form action="#" className="mt-8 grid grid-cols-6 gap-6">
-          <div className="col-span-6 ">
-            <label htmlFor="FirstName" className="block text-sm font-medium text-gray-700">
-              User Name
-            </label>
-
-            <input
-              type="text"
-              id="FirstName"
-              name="first_name"
-              className="mt-1 w-full rounded-md border-gray-200 bg-white text-lg text-gray-700 shadow-sm"
-            />
-          </div>
-
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-8 grid grid-cols-6 gap-6">
+          
           <div className="col-span-6">
             <label htmlFor="Email" className="block text-sm font-medium text-gray-700"> Email </label>
 
             <input
               type="email"
               id="Email"
-              name="email"
+              {...register("email", { 
+                required: "Email is required", 
+                pattern: { 
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, 
+                  message: "Enter a valid email address" 
+                }
+              })}
               className="mt-1 w-full rounded-md border-gray-200 bg-white text-lg text-gray-700 shadow-sm"
             />
+            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
           </div>
 
           <div className="col-span-6 ">
             <label htmlFor="Password" className="block text-sm font-medium text-gray-700"> Password </label>
-
             <input
               type="password"
               id="Password"
-              name="password"
+              {...register("password", { 
+                required: "Password is required", 
+                minLength: { 
+                  value: 6, 
+                  message: "Password must be at least 6 characters long" 
+                }
+              })}
               className="mt-1 w-full rounded-md border-gray-200 bg-white text-lg text-gray-700 shadow-sm"
             />
+            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
           </div>
 
-          
+          {error && <p className="col-span-6 text-red-500">{error}</p>}
+          {successMessage && <p className="col-span-6 text-green-500">{successMessage}</p>}
 
           <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
             <button
               className="inline-block shrink-0 rounded-md border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500"
+              disabled={loading}
             >
-             Register
+              {loading ? 'Registering...' : 'Register'}
             </button>
 
             <p className="mt-4 text-sm text-gray-500 sm:mt-0">
               Already have account?
-              <a href="#" className="text-gray-700 underline">Log in</a>.
+              <a href="login" className="text-gray-700 underline">Log in</a>.
             </p>
           </div>
         </form>
