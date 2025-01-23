@@ -10,7 +10,7 @@ function UserPage() {
   const [userEmail, setUserEmail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [profileImage, setProfileImage] = useState("app/lib/default_profile_picture.jpg");
+  const [profileImage, setProfileImage] = useState(null);
 
   const {
     register,

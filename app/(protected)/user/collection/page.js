@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { auth, db } from '@/app/lib/firebase';
 import { collection, query, where, getDocs, addDoc, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 
-const placeholderImage = '/img/default_painting.jpg';
 
 export default function CollectionPage() {
   const [paintings, setPaintings] = useState([]);
@@ -17,7 +16,8 @@ export default function CollectionPage() {
     register,
     handleSubmit,
     reset,
-    formState: { errors }
+    formState: { errors },
+    setValue
   } = useForm();
 
   useEffect(() => {
@@ -54,17 +54,17 @@ export default function CollectionPage() {
   };
 
   const handleEdit = (id) => {
+    window.scrollTo(0, 0);
     const paintingToEdit = paintings.find((painting) => painting.id === id);
+    console.log('editing paining data: ', paintingToEdit);
     if (paintingToEdit) {
       setEditingId(id);
-      reset({
-        authorName: paintingToEdit.authorName,
-        authorSurname: paintingToEdit.authorSurname,
-        title: paintingToEdit.title,
-        technique: paintingToEdit.technique,
-        imageURL: paintingToEdit.imageURL,
-        year: paintingToEdit.date,
-      });
+      setValue("authorName", paintingToEdit.authorName || '');
+      setValue("authorSurname", paintingToEdit.authorSurname || '');
+      setValue("title", paintingToEdit.title || '');
+      setValue("technique", paintingToEdit.technique || '');
+      setValue("imageURL", paintingToEdit.imageURL || '');
+      setValue("date", paintingToEdit.date || '');
     }
   };
 
@@ -73,13 +73,13 @@ export default function CollectionPage() {
     try {
       const user = auth.currentUser;
       if (user) {
-        const selectedYear = Number(data.year);
+        const selectedYear = Number(data.date);
         if (isNaN(selectedYear)) {
           throw new Error('Invalid year input');
         }
 
         if (editingId) {
-          // Update existing painting
+          // Update painting
           await updateDoc(doc(db, 'paintings', editingId), {
             authorName: data.authorName,
             authorSurname: data.authorSurname,
@@ -100,7 +100,7 @@ export default function CollectionPage() {
             title: '',
             technique: '',
             imageURL: '',
-            year: '',
+            date: '',
           });
         } else {
           // Add new painting
@@ -182,7 +182,7 @@ export default function CollectionPage() {
           <label className="block text-sm font-medium text-gray-700">Year painted</label>
           <input
             type="number"
-            {...register("year", { 
+            {...register("date", { 
                 required: 'Year is required', 
                 min: {value:500, message: 'Year must be at least 500'},
                 max: {value: new Date().getFullYear(), message: 'Year cannot be in the future'}  
