@@ -80,7 +80,8 @@ export default function CollectionPage() {
 
         if (editingId) {
           // Update painting
-          await updateDoc(doc(db, 'paintings', editingId), {
+          const paintingDoc = doc(db, 'paintings', editingId);
+          await updateDoc(paintingDoc, {
             authorName: data.authorName,
             authorSurname: data.authorSurname,
             title: data.title,
@@ -94,14 +95,7 @@ export default function CollectionPage() {
             )
           );
           setEditingId(null);
-          reset({
-            authorName: '',
-            authorSurname: '',
-            title: '',
-            technique: '',
-            imageURL: '',
-            date: '',
-          });
+          
         } else {
           // Add new painting
           await addDoc(collection(db, 'paintings'), {
